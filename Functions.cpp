@@ -1,10 +1,4 @@
-/*
-Name: Brian Huang and Kush Soni
-6/1/21
-methods file
-*/
 #include <iostream>
-#include <regex>
 #include <string>
 #include <stdlib.h>
 #include <time.h>
@@ -12,41 +6,10 @@ methods file
 #include <list>
 #include <sstream>
 #include "Functions.h"
+#include "GetData.h"
 
 using namespace std;
-//data validation function
-bool getValidInt(int& t_int) {
-	string intScratch = "";
-	bool isValid = true;
 
-
-	getline(cin, intScratch);
-
-
-
-	//remove all whitespace
-	std::regex r("\\s+");
-	intScratch = std::regex_replace(intScratch, r, "");
-	isValid = intScratch.find_first_not_of("-0123456789") == string::npos;
-	if (count(intScratch.begin(), intScratch.end(), '-') > 1) {
-		isValid = false;
-	}
-	else if (count(intScratch.begin(), intScratch.end(), '-') > 0) {
-		if (intScratch.at(0) != '-') {
-			isValid = false;
-		}
-	}
-	// all errors caught
-	try {
-		t_int = stoi(intScratch);
-	}
-	catch (...) {
-		isValid = false;
-		cout << "invalid input" << endl;
-	}
-
-	return isValid;
-}
 //Empty Student Class Constructor
 Student::Student() {
 
@@ -60,13 +23,13 @@ Student::Student(string studentName, int numCourses) {
 //Function to ask for the name of the student
 void Student::setName() {
 	while (true) {
-		std::cout << "Enter student's full name: ";
-		getline(cin, this->studentName);
-		if (studentName.empty()) {
-			std::cout << "Invalid Input\n";
+		std::cout << "Please enter your full name: ";
+		getline(cin, studentName);
+		if (studentName.size() > 0) {
+			break;
 		}
 		else {
-			break;
+			std::cout << "Invalid Input" << std::endl;
 		}
 	}
 }
@@ -78,23 +41,30 @@ string Student::getName() {
 
 //Function to ask the user for the number of courses
 void Student::setCourses() {
-	string sCourse = "";
-	int course = 0;
-	bool done = false;
-	while (true) {
+	bool isDecimal = false;
+	int totalGrades = 0;
+	int grade;
+	string courseName;
+	string temp;
+	while (true) {//limits courses to 1-8
+
 		do {
-			std::cout << "How many courses are you taking (Min = 1 and Max = 8): ";
-		} while (!getValidInt(course));
-		if (course <= 8 &&course >= 1) {
-			
-			break;
+			std::cout << "How  many courses are you taking? (1-8): ";
+		} while (!getValidInt(numCourses));
+
+		if (isDecimal == false) {
+			if (numCourses > 0 && numCourses <= 8) {
+
+				break;
+			}
+			else {
+				std::cout << "Number of courses must be between 1-8" << std::endl;
+			}
 		}
-		else {
-			cout << "invalid input" << endl;
-		}
+
 	}
-	numCourses = course;
 }
+
 //Function to get the # of courses
 int Student::getCourses() {
 	return numCourses;
@@ -110,19 +80,6 @@ void Student::getCourseList() {
 		//Adding to the Object List
 		courses.push_front(course);
 	}
-}
-
-//Function to Generate a 5% chance of a Discipline Issue
-bool Student::getDisciplineIssue() {
-	srand(time(NULL));
-	double randGen = ((rand() % 100) + 1);
-	if (randGen > 95) {
-		disciplineIssue = true;
-	}
-	else {
-		disciplineIssue = false;
-	}
-	return disciplineIssue;
 }
 
 //Function to the Average of the Grades
@@ -154,7 +111,25 @@ bool Student::getHonorRoll() {
 		return 0;
 	}
 }
-
+list<std::string> Student::alphabetize(list<std::string> unsortedList) {//might change to pass by reference
+	
+	return unsortedList;
+}
+list<int> Student::sortGrades(list<int> grades) {
+	list<int> sortedVector{ std::begin(grades),std::end(grades)};
+	int i, j;
+	int temp;
+	int listLength = grades.size();
+	for (i = 0; i < (listLength - 1); i++) {
+		for (j = (i + 1); j < listLength; j++) {
+			if (sortedVector[i] < sortedVector[j]) {
+				temp = sortedVector[i];
+				sortedVector = [i];
+			}
+		}
+	}
+	return grades;
+}
 //Function to Print the Information of the Student
 void Student::printInfo() {
 	std::cout << "\n";
@@ -168,7 +143,7 @@ void Student::printInfo() {
 		Course course = *it;
 		string name = course.getCourseName();
 		std::cout << name;
-		for (int j = 0; j < 25- name.length(); j++) {
+		for (int j = 0; j < 25 - name.length(); j++) {
 			std::cout << " ";
 		}
 		std::cout << course.getCourseGrade() << "\n";
@@ -176,14 +151,6 @@ void Student::printInfo() {
 	//Printing out the Average, Disciplinary Infraction, and Honor Roll Elligibility
 	std::cout << "\n";
 	std::cout << "Average is: " << this->average << "\n";
-	std::cout << "\n";
-	if (this->disciplineIssue == 1) {
-		std::cout << "Disciplinary Infraction: YES\n";
-	}
-	else {
-		std::cout << "Disciplinary Infraction: NO\n";
-	}
-	std::cout << "\n";
 	if (this->honorRoll == 1) {
 		std::cout << "Congratulations " << this->studentName << "! You have made the honor roll.\n";
 	}
@@ -205,23 +172,25 @@ Course::Course(string courseName, int courseGrade) {
 
 //Function to as the User for the Course Name
 string Course::setCourseName() {
-	string courseName = "abcdefghijklmnopqrstuvwxyz";
-	//Running a While Loop until Valid Input is Given
-	while (courseName.length() > 20 || courseName.empty()) {
-		std::cout << "Course Name (20 characters): ";
-		getline(cin,courseName);
-		if (courseName.length() > 20) {
-			std::cout << "Invalid input\n";
-		}
-		else if (courseName.empty()) {
-			std::cout << "\n";
+	string tempName = "";
+	while (true) {
+		std::cout << "Course Name (1-20 characters): ";
+		getline(cin, tempName);
+		if (tempName.empty()) {
+			std::cout << "\nInvalid Input";
 		}
 		else {
-			this->courseName = courseName;
-			return courseName;
+			break;
 		}
-		cin.clear();
 	}
+	if (tempName.length() > 20) {
+		tempName = tempName.substr(0, 20);
+		this->courseName = tempName;
+	}
+	else {
+		this->courseName = tempName;
+	}
+	return courseName;
 }
 
 //Function to get the Course Name
@@ -231,25 +200,24 @@ string Course::getCourseName() {
 
 //Function to as the User for the Course Grade
 int Course::setCourseGrade() {
-	int grade = 121;
-	int c = 0;
-	int charordec = 0;
-	//While Loop runs until valid input is given
-	while (true) {
+	string temp;
+	bool isDecimal = false;
+	while (true) {//cases 8-11
 		do {
-			std::cout << "Course Grade (0-120): ";
-		} while (!getValidInt(grade));
+			std::cout << "What was your grade for " + courseName + " (0-120): ";
+		} while (!getValidInt(courseGrade));
+		temp = std::to_string(courseGrade);
 
-		if (grade >= 0 && grade <= 120) {
-			break;
+		if (isDecimal == false) {
+			if (courseGrade >= 0 && courseGrade <= 120) {
+				break;
+			}
+			else {
+				std::cout << "Invalid Input" << std::endl;
+			}
 		}
-		else {
-			cout << "invalid input" << endl;
-		}
-
-	break;
 	}
-	return grade;
+	return courseGrade;
 }
 
 //Function to Return the Course Grade
