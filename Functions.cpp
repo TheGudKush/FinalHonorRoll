@@ -1,9 +1,10 @@
-//6/3/21 no really working atm
 #include <iostream>
 #include <string>
+#include <vector>
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
+#include <algorithm>
 #include <list>
 #include <sstream>
 #include "Functions.h"
@@ -117,19 +118,26 @@ list<std::string> Student::alphabetize(list<std::string> unsortedList) {//might 
 	return unsortedList;
 }
 list<int> Student::sortGrades(list<int> grades) {
-	list<int> sortedVector{ std::begin(grades),std::end(grades)};
+	//grades.sort(); //another option, sorts the list in ascending order
+	std::vector<int> sortedVector{ std::begin(grades), std::end(grades) };
 	int i, j;
 	int temp;
 	int listLength = grades.size();
-	for (i = 0; i < (listLength - 1); i++) {
+	for (i = 0; i < (listLength - 1); i++) {//exchange sort algorithm that sorts in desending order.
 		for (j = (i + 1); j < listLength; j++) {
 			if (sortedVector[i] < sortedVector[j]) {
 				temp = sortedVector[i];
-				sortedVector = [i];
+				sortedVector[i] =  sortedVector[j];
+				sortedVector[j] = temp;
 			}
 		}
 	}
-	return grades;
+	
+	for (int ii = 0; ii < sortedVector.size(); ii++) {
+		std::cout << sortedVector[ii] << std::endl;
+	}
+	std::list<int> sortedList(sortedVector.begin(), sortedVector.end());
+	return sortedList;
 }
 //Function to Print the Information of the Student
 void Student::printInfo() {
