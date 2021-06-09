@@ -114,8 +114,10 @@ bool Student::getHonorRoll() {
 	}
 }
 list<std::string> Student::alphabetize(list<std::string> unsortedList) {//might change to pass by reference
-	
-	return unsortedList;
+	std::vector <string> sortedVector{ std::begin(unsortedList),std::end(unsortedList) };
+	sort(std::begin(sortedVector), std::end(sortedVector));
+	std::list<std::string> sortedList(sortedVector.begin(), sortedVector.end());
+	return sortedList;
 }
 list<int> Student::sortGrades(list<int> grades) {
 	//grades.sort(); //another option, sorts the list in ascending order
@@ -133,9 +135,6 @@ list<int> Student::sortGrades(list<int> grades) {
 		}
 	}
 	
-	for (int ii = 0; ii < sortedVector.size(); ii++) {
-		std::cout << sortedVector[ii] << std::endl;
-	}
 	std::list<int> sortedList(sortedVector.begin(), sortedVector.end());
 	return sortedList;
 }
