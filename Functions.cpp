@@ -1,8 +1,11 @@
+//6/13/21 test
 #include <iostream>
 #include <string>
+#include <vector>
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
+#include <algorithm>
 #include <list>
 #include <sstream>
 #include "Functions.h"
@@ -111,7 +114,31 @@ bool Student::getHonorRoll() {
 		return 0;
 	}
 }
-
+list<std::string> Student::alphabetize(list<std::string> unsortedList) {//might change to pass by reference
+	std::vector <string> sortedVector{ std::begin(unsortedList),std::end(unsortedList) };
+	sort(std::begin(sortedVector), std::end(sortedVector));
+	std::list<std::string> sortedList(sortedVector.begin(), sortedVector.end());
+	return sortedList;
+}
+list<int> Student::sortGrades(list<int> grades) {
+	//grades.sort(); //another option, sorts the list in ascending order
+	std::vector<int> sortedVector{ std::begin(grades), std::end(grades) };
+	int i, j;
+	int temp;
+	int listLength = grades.size();
+	for (i = 0; i < (listLength - 1); i++) {//exchange sort algorithm that sorts in desending order.
+		for (j = (i + 1); j < listLength; j++) {
+			if (sortedVector[i] < sortedVector[j]) {
+				temp = sortedVector[i];
+				sortedVector[i] =  sortedVector[j];
+				sortedVector[j] = temp;
+			}
+		}
+	}
+	
+	std::list<int> sortedList(sortedVector.begin(), sortedVector.end());
+	return sortedList;
+}
 //Function to Print the Information of the Student
 void Student::printInfo() {
 	std::cout << "\n";

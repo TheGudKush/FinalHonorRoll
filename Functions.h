@@ -29,6 +29,8 @@ public:
 	bool getHonorRoll();
 	void printInfo();
 	bool getValidInt(int& t_int);
+	list<std::string> alphabetize(list<std::string>);
+	list<int> sortGrades(list<int>);
 };
 //Course Class
 class Course {
